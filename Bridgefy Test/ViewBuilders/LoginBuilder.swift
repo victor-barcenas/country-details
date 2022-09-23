@@ -9,9 +9,13 @@ import UIKit
 
 final class LoginBuilder {
     private let loginViewController = LoginViewController()
+    private var scrollContentView: UIView!
     
     func build() -> LoginViewController {
         loginViewController.setRootView()
+        loginViewController.scrollView = configureScrollView()
+        loginViewController.contentView = configureContentView()
+        scrollContentView = loginViewController.contentView
         loginViewController.logoImageView =  configureLogo()
         loginViewController.signinButton = configureSigninButton()
         loginViewController.passwordField = configurePasswordField()
@@ -19,27 +23,98 @@ final class LoginBuilder {
         return loginViewController
     }
     
+    private func configureScrollView() -> UIScrollView {
+        guard let mainView = loginViewController.view else {
+            return UIScrollView()
+        }
+        let scrollView = UIScrollView()
+        mainView.addSubview(scrollView)
+        
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        
+        let centerXConstraint = scrollView.centerXAnchor
+            .constraint(equalTo: mainView.centerXAnchor)
+        let widthConstraint = scrollView.widthAnchor
+            .constraint(equalTo: mainView.widthAnchor)
+        let topConstraint = scrollView.topAnchor
+            .constraint(equalTo: mainView.topAnchor)
+        let bottomConstraint = scrollView.bottomAnchor
+            .constraint(equalTo: mainView.bottomAnchor)
+        let heightConstraint = scrollView.heightAnchor
+            .constraint(equalTo: mainView.heightAnchor)
+        
+        mainView.addConstraints([
+            widthConstraint,
+            centerXConstraint,
+            topConstraint,
+            bottomConstraint,
+            heightConstraint
+        ])
+        mainView.layoutIfNeeded()
+        return scrollView
+    }
+    
+    private func configureContentView() -> UIView {
+        guard let scrollView = loginViewController.scrollView else {
+            return UIView()
+        }
+        let contentView = UIView()
+        scrollView.addSubview(contentView)
+        
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+
+        let centerXConstraint = contentView.centerXAnchor
+            .constraint(equalTo: scrollView.centerXAnchor)
+        let centerYConstraint = contentView.centerYAnchor
+            .constraint(equalTo: scrollView.centerYAnchor)
+        let widthConstraint = contentView.widthAnchor
+            .constraint(equalTo: scrollView.widthAnchor)
+        let heightConstraint = contentView.heightAnchor
+            .constraint(equalTo: scrollView.heightAnchor)
+        let bottomConstraint = scrollView.bottomAnchor
+            .constraint(equalTo: contentView.bottomAnchor)
+        let topConstraint = contentView.topAnchor
+            .constraint(equalTo: scrollView.topAnchor)
+        let leadingConstraint = contentView.leadingAnchor
+            .constraint(equalTo: scrollView.leadingAnchor)
+        let trailingConstraint = scrollView.trailingAnchor
+            .constraint(equalTo: contentView.trailingAnchor)
+        
+        scrollView.addConstraints([
+            heightConstraint,
+            widthConstraint,
+            topConstraint,
+            bottomConstraint,
+            centerXConstraint,
+            centerYConstraint,
+            leadingConstraint,
+            trailingConstraint
+        ])
+        contentView.layoutIfNeeded()
+        return contentView
+    }
+    
     private func configureLogo() -> UIImageView {
         let logoImageView = UIImageView()
         logoImageView.image = UIImage(named: "logo")
         logoImageView.setImageColor(color: .baseOrange)
-        loginViewController.view.addSubview(logoImageView)
+        scrollContentView.addSubview(logoImageView)
         logoImageView.translatesAutoresizingMaskIntoConstraints = false
         let horizontalConstraint = logoImageView.centerXAnchor
-            .constraint(equalTo: loginViewController.view.centerXAnchor)
+            .constraint(equalTo: scrollContentView.centerXAnchor)
         let verticalConstraint = logoImageView.centerYAnchor
-            .constraint(equalTo: loginViewController.view.centerYAnchor,
+            .constraint(equalTo: scrollContentView.centerYAnchor,
                         constant: -112)
         let widthConstraint = logoImageView.widthAnchor
             .constraint(equalToConstant: 80)
         let heightConstraint = logoImageView.heightAnchor
             .constraint(equalToConstant: 80)
-        loginViewController.view.addConstraints([
+        scrollContentView.addConstraints([
             horizontalConstraint,
             verticalConstraint,
             widthConstraint,
             heightConstraint])
-        layoutIfNeeded()
+        scrollContentView.layoutIfNeeded()
         return logoImageView
     }
     
@@ -52,37 +127,37 @@ final class LoginBuilder {
         signinButton.addTarget(loginViewController,
                                action: #selector(loginViewController.signInAction(_:)),
                                for: .touchUpInside)
-        loginViewController.view.addSubview(signinButton)
+        scrollContentView.addSubview(signinButton)
         signinButton.translatesAutoresizingMaskIntoConstraints = false
         let leadingConstraint = signinButton.leadingAnchor
-            .constraint(equalTo: loginViewController.view.leadingAnchor,
+            .constraint(equalTo: scrollContentView.leadingAnchor,
                         constant: 16)
-        let trailingConstraint = loginViewController.view.trailingAnchor
+        let trailingConstraint = scrollContentView.trailingAnchor
             .constraint(equalTo: signinButton.trailingAnchor,
                         constant: 16)
-        let bottomConstraint = loginViewController.view.bottomAnchor
+        let bottomConstraint = scrollContentView.bottomAnchor
             .constraint(equalTo: signinButton.bottomAnchor,
                         constant: 48)
         let heightConstraint = signinButton.heightAnchor
             .constraint(equalToConstant: 45)
-        loginViewController.view.addConstraints([
+        scrollContentView.addConstraints([
             leadingConstraint,
             trailingConstraint,
             bottomConstraint,
             heightConstraint])
-        layoutIfNeeded()
+        scrollContentView.layoutIfNeeded()
         return signinButton
     }
     
     private func configureEmailField() -> PaddedTextField {
         let emailField = PaddedTextField()
         emailField.placeholder = "Email"
-        loginViewController.view.addSubview(emailField)
+        scrollContentView.addSubview(emailField)
         emailField.translatesAutoresizingMaskIntoConstraints = false
         let leadingConstraint = emailField.leadingAnchor
-            .constraint(equalTo: loginViewController.view.leadingAnchor,
+            .constraint(equalTo: scrollContentView.leadingAnchor,
                         constant: 16)
-        let trailingConstraint = loginViewController.view.trailingAnchor
+        let trailingConstraint = scrollContentView.trailingAnchor
             .constraint(equalTo: emailField.trailingAnchor,
                         constant: 16)
         let bottomConstraint = loginViewController.passwordField.topAnchor
@@ -90,25 +165,26 @@ final class LoginBuilder {
                         constant: 16)
         let heightConstraint = emailField.heightAnchor
             .constraint(equalToConstant: 35)
-        loginViewController.view.addConstraints([
+        scrollContentView.addConstraints([
             leadingConstraint,
             trailingConstraint,
             bottomConstraint,
             heightConstraint])
-        layoutIfNeeded()
+        scrollContentView.layoutIfNeeded()
         emailField.addBottomLine()
+        emailField.delegate = loginViewController
         return emailField
     }
     
     private func configurePasswordField() -> PaddedTextField {
         let passwordField = PaddedTextField()
         passwordField.placeholder = "Password"
-        loginViewController.view.addSubview(passwordField)
+        scrollContentView.addSubview(passwordField)
         passwordField.translatesAutoresizingMaskIntoConstraints = false
         let leadingConstraint = passwordField.leadingAnchor
-            .constraint(equalTo: loginViewController.view.leadingAnchor,
+            .constraint(equalTo: scrollContentView.leadingAnchor,
                         constant: 16)
-        let trailingConstraint = loginViewController.view.trailingAnchor
+        let trailingConstraint = scrollContentView.trailingAnchor
             .constraint(equalTo: passwordField.trailingAnchor,
                         constant: 16)
         let bottomConstraint = loginViewController.signinButton.topAnchor
@@ -116,17 +192,14 @@ final class LoginBuilder {
                         constant: 48)
         let heightConstraint = passwordField.heightAnchor
             .constraint(equalToConstant: 35)
-        loginViewController.view.addConstraints([
+        scrollContentView.addConstraints([
             leadingConstraint,
             trailingConstraint,
             bottomConstraint,
             heightConstraint])
-        layoutIfNeeded()
+        scrollContentView.layoutIfNeeded()
         passwordField.addBottomLine()
+        passwordField.delegate = loginViewController
         return passwordField
-    }
-    
-    private func layoutIfNeeded() {
-        loginViewController.view.layoutIfNeeded()
     }
 }
