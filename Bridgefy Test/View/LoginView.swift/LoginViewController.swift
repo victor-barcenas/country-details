@@ -7,16 +7,15 @@
 
 import UIKit
 
-class LoginViewController: UIViewController {
+class LoginViewController: KeyboardController {
     
     weak var logoImageView: UIImageView!
     weak var emailField: PaddedTextField!
     weak var passwordField: PaddedTextField!
     weak var signinButton: UIButton!
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
     }
     
     @IBAction func signInAction(_ sender: Any) {
