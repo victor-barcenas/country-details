@@ -8,10 +8,12 @@
 import UIKit
 
 final class LoginBuilder {
-    private let loginViewController = LoginViewController()
+    private var loginViewController: LoginViewController!
     private var scrollContentView: UIView!
     
     func build() -> LoginViewController {
+        let loginViewModel = LoginViewModel()
+        loginViewController = LoginViewController(loginViewModel)
         loginViewController.setRootView()
         loginViewController.scrollView = configureScrollView()
         loginViewController.contentView = configureContentView()
@@ -152,6 +154,8 @@ final class LoginBuilder {
     private func configureEmailField() -> PaddedTextField {
         let emailField = PaddedTextField()
         emailField.placeholder = "Email"
+        emailField.autocorrectionType = .no
+        emailField.autocapitalizationType = .none
         scrollContentView.addSubview(emailField)
         emailField.translatesAutoresizingMaskIntoConstraints = false
         let leadingConstraint = emailField.leadingAnchor
@@ -179,6 +183,7 @@ final class LoginBuilder {
     private func configurePasswordField() -> PaddedTextField {
         let passwordField = PaddedTextField()
         passwordField.placeholder = "Password"
+        passwordField.isSecureTextEntry = true
         scrollContentView.addSubview(passwordField)
         passwordField.translatesAutoresizingMaskIntoConstraints = false
         let leadingConstraint = passwordField.leadingAnchor
