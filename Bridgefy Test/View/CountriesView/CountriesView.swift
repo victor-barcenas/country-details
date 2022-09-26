@@ -10,6 +10,7 @@ import UIKit
 class CountriesView: UIViewController, ActivityIndicatable {
     
     private var tableView: UITableView!
+    private var searchBar: UISearchBar!
     private var viewModel: CountriesViewModel!
     
     init(_ viewModel: CountriesViewModel) {
@@ -68,13 +69,28 @@ class CountriesView: UIViewController, ActivityIndicatable {
         tableView.dataSource = self
         tableView.delegate = self
         view.layoutIfNeeded()
+        configureSearchBar()
+    }
+    
+    private func configureSearchBar() {
+        searchBar = UISearchBar()
+        searchBar.searchBarStyle = UISearchBar.Style.default
+        searchBar.placeholder = " Search..."
+        searchBar.sizeToFit()
+        searchBar.isTranslucent = false
+        searchBar.backgroundImage = UIImage()
+        searchBar.delegate = self
+        tableView.tableHeaderView = searchBar
     }
     
     @objc func groupAction(_ sender: Any) {
         viewModel.group()
         if viewModel.areCountriesGrouped {
+            searchBar.removeFromSuperview()
+            tableView.tableHeaderView = nil
             setRightBarButton("Ungroup", selector: #selector(groupAction(_:)))
         } else {
+            configureSearchBar()
             setRightBarButton("Group", selector: #selector(groupAction(_:)))
         }
         reloadTableView()
@@ -84,6 +100,13 @@ class CountriesView: UIViewController, ActivityIndicatable {
         DispatchQueue.main.async { [weak self] in
             self?.tableView.reloadData()
         }
+    }
+}
+
+extension CountriesView: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        viewModel.search(searchText)
+        reloadTableView()
     }
 }
 

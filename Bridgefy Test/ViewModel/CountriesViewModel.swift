@@ -13,15 +13,13 @@ final class CountriesViewModel: CountriesQueryable {
     private var regions: [String] = []
     private var countriesByRegion: [String: [Country]] = [:]
     private var countriesList: [Country] = []
+    private lazy var countriesFiltered: [Country] = []
+    private var isSearchActive: Bool = false
     
     var areCountriesGrouped = false
     
     var sectionsCount: Int {
         return areCountriesGrouped ? regions.count : 1
-    }
-    
-    var rowCount: Int {
-        return areCountriesGrouped ? countriesByRegion.count : countriesList.count
     }
     
     init(with networkManager: NetworkManager) {
@@ -45,6 +43,9 @@ final class CountriesViewModel: CountriesQueryable {
     }
     
     func numberOfRows(at section: Int) -> Int {
+        guard !isSearchActive else {
+            return countriesFiltered.count
+        }
         guard areCountriesGrouped else {
             return countriesList.count
         }
@@ -53,6 +54,9 @@ final class CountriesViewModel: CountriesQueryable {
     }
     
     func country(at indexPath: IndexPath) -> Country? {
+        guard countriesFiltered.count <= 0 else {
+            return countriesFiltered[indexPath.row]
+        }
         guard areCountriesGrouped else {
             return countriesList[indexPath.row]
         }
@@ -62,5 +66,18 @@ final class CountriesViewModel: CountriesQueryable {
     
     func titleFor(_ section: Int) -> String {
         return regions[section]
+    }
+    
+    func search(_ text: String) {
+        guard text.count > 0 else {
+            countriesFiltered = []
+            isSearchActive = false
+            return
+        }
+        isSearchActive = true
+        countriesFiltered = countriesList.filter { country in
+            let name = country.name.lowercased()
+            return name.contains(text.lowercased())
+        }
     }
 }
