@@ -15,9 +15,9 @@ final class TabViewBuilder {
         tabView.tabBar.unselectedItemTintColor = .gray
         tabView.tabBar.backgroundColor = UIColor(red: 0.979, green: 0.971,
                                                  blue: 0.971, alpha: 1)
+        let networkManager = NetworkManager()
         
-        let countriesView = CountriesView()
-        countriesView.setRootView()
+        let countriesView = CountriesViewBuilder().build(with: networkManager)
         countriesView.tabBarItem = TabViewItem.countries.buttonItem
         countriesView.tabBarItem.selectedImage = TabViewItem.countries.selectedImage
         countriesView.title = "Countries"

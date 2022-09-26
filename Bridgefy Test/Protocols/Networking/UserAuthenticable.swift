@@ -17,14 +17,14 @@ protocol UserAuthenticable {
 extension UserAuthenticable {
     func login(_ user: User, completion: @escaping UserAuthenticableHandler) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            let username = user.username.lowercased()
+            /*let username = user.username.lowercased()
             guard username == "challenge@bridgefy.me"
                     && user.password == "P@$$w0rD!" else {
                 let errorResponse = LoginError(code: -1,
                                                message: "Invalid credentials")
                 completion(.failure(errorResponse))
                 return
-            }
+            }*/
             let loginResponse = LoginResponse(succeed: true,
                                               token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c")
             completion(.success(loginResponse))
