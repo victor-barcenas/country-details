@@ -43,8 +43,9 @@ class LoginViewController: KeyboardController, ActivityIndicatable {
         viewModel.login(user) { [weak self] response in
             self?.stopLoading()
             switch response {
-            case .success(let loginResponse):
-                print(loginResponse)
+            case .success(_):
+                let tabViewBuilder = TabViewBuilder()
+                self?.transition(to: tabViewBuilder.build())
             case .failure(let error):
                 self?.showMessage(error.message, title: "Error")
             }
