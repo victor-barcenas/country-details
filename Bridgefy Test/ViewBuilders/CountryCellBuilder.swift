@@ -64,6 +64,7 @@ final class CountryCellBuilder {
     
     func setAlphaCodeLabel() -> UILabel {
         let alphaCodeLabel = UILabel()
+        alphaCodeLabel.textColor = .placeholderText
         
         let contentView = countryCell.contentView
         countryCell.contentView.addSubview(alphaCodeLabel)

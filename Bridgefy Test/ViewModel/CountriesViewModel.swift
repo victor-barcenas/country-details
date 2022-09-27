@@ -80,4 +80,10 @@ final class CountriesViewModel: CountriesQueryable {
             return name.contains(text.lowercased())
         }
     }
+    
+    func borders(_ countries: [String]) -> [Country] {
+        return countriesList.filter ({
+            return countries.contains($0.alpha3Code)
+        })
+    }
 }
