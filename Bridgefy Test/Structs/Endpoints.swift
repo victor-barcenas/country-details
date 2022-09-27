@@ -11,6 +11,6 @@ struct Endpoints {
     static let api = "https://restcountries.com/v2"
     struct Country {
         static let list = Endpoints.api + "/all"
-        static let detail = Endpoints.api + "/name"
+        static let detail = Endpoints.api + "/name/"
     }
 }

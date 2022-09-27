@@ -44,7 +44,7 @@ class NetworkManager {
                 let decoder = JSONDecoder()
                 guard let statusCode = response.response?.statusCode, (200..<300).contains(statusCode) else {
                     let error = NSError(domain: "",
-                                        code: response.response!.statusCode)
+                                        code: response.response?.statusCode ?? -99)
                     completion(.failure(error as! E))
                     print()
                     print("❌<---- RESPONSE -----")

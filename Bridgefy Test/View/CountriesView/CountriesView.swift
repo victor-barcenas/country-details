@@ -12,6 +12,8 @@ class CountriesView: UIViewController, ActivityIndicatable {
     private var tableView: UITableView!
     private var searchBar: UISearchBar!
     private var viewModel: CountriesViewModel!
+    private var countriesLoaded: Bool = false
+    private lazy var countryDetailViewBuilder = CountryDetailBuilder()
     
     init(_ viewModel: CountriesViewModel) {
         self.viewModel = viewModel
@@ -23,11 +25,14 @@ class CountriesView: UIViewController, ActivityIndicatable {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        navigationController?.navigationBar.prefersLargeTitles = true
+        guard !countriesLoaded else { return }
         startLoading(with: "Getting country list...")
         viewModel.getCountries { [weak self] result in
             self?.stopLoading()
             switch result {
             case .success(let countries):
+                self?.countriesLoaded = true
                 self?.viewModel.set(countries: countries)
                 self?.configureTableView()
                 self?.reloadTableView()
@@ -136,6 +141,27 @@ extension CountriesView: UITableViewDataSource {
 }
 
 extension CountriesView: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let country = viewModel.country(at: indexPath) else {
+            tableView.deselectRow(at: indexPath, animated: true)
+            return
+        }
+        startLoading(with: "Fetching country detail...")
+        countryDetailViewBuilder.build(with: viewModel.networkManager,
+                                       countryName: country.name) { [weak self] countryDetailView in
+            guard let self = self else { return }
+            self.stopLoading()
+            guard let countryDetailView = countryDetailView  else {
+                self.showMessage("Unable to download country detail", title: "Error")
+                return
+            }
+            countryDetailView.countryBorders = self.viewModel
+                .borders(countryDetailView.borders)
+            self.navigationController?.pushViewController(countryDetailView, animated: true)
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
+    }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let frame = CGRect(x: 0, y: 0,
