@@ -26,7 +26,7 @@ extension Encodable {
         }
     }
     
-    func from<T: Codable>(data: Data) -> T? {
+    static func from<T: Codable>(_ t: T.Type, data: Data) -> T? {
         let decoder = JSONDecoder()
         return try? decoder.decode(T.self, from: data)
     }

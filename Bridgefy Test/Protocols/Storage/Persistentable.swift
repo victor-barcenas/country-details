@@ -8,6 +8,6 @@
 import CoreData
 
 protocol Persistentable {
-    var coreDataManager: CoreDataManager { get set }
+    var coreDataManager: CoreDataManager! { get set }
     var entityDescription: NSEntityDescription? { get set }
 }
