@@ -35,6 +35,7 @@ final class TabViewBuilder {
         bleView.title = "BLE"
         
         let bleNavController = UINavigationController(rootViewController: bleView)
+        bleNavController.navigationBar.prefersLargeTitles = true
         setNavigationBarAppereance(bleNavController)
         
         tabView.viewControllers = [countriesNavController, bleNavController]
