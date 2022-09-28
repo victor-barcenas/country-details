@@ -11,8 +11,10 @@ final class CountriesViewBuilder {
     var countriesView: CountriesView!
     var contentView: UIView!
     
-    func build(with networkManager: NetworkManager) -> CountriesView {
-        let countriesViewModel = CountriesViewModel(with: networkManager)
+    func build(with networkManager: NetworkManager,
+               coreDataManager: CoreDataManager) -> CountriesView {
+        let countriesViewModel = CountriesViewModel(with: networkManager,
+                                                    coredataManager: coreDataManager)
         countriesView = CountriesView(countriesViewModel)
         countriesView.setRootView()
         countriesView.setRightBarButton(

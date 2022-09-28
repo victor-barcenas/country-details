@@ -16,8 +16,10 @@ final class TabViewBuilder {
         tabView.tabBar.backgroundColor = UIColor(red: 0.979, green: 0.971,
                                                  blue: 0.971, alpha: 1)
         let networkManager = NetworkManager()
+        let coreDataManager = CoreDataManager(modelName: "Bridgefy")
         
-        let countriesView = CountriesViewBuilder().build(with: networkManager)
+        let countriesView = CountriesViewBuilder().build(with: networkManager,
+                                                         coreDataManager: coreDataManager)
         countriesView.tabBarItem = TabViewItem.countries.buttonItem
         countriesView.tabBarItem.selectedImage = TabViewItem.countries.selectedImage
         countriesView.title = "Countries"

@@ -39,6 +39,8 @@ class CountryDetailView: UIViewController, ActivityIndicatable {
     var borderCollectionView: UICollectionView!
     var countryBorders: [Country]!
     var borders: [String]!
+    var countryDetail: CountryDetail!
+    
     lazy var flowLayout: UICollectionViewFlowLayout = {
         let f = UICollectionViewFlowLayout()
         f.scrollDirection = .horizontal
@@ -46,8 +48,9 @@ class CountryDetailView: UIViewController, ActivityIndicatable {
         return f
     }()
     
-    init(_ viewModel: CountryDetailViewModel) {
+    init(_ viewModel: CountryDetailViewModel, countryDetail: CountryDetail) {
         self.viewModel = viewModel
+        self.countryDetail = countryDetail
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -60,6 +63,8 @@ class CountryDetailView: UIViewController, ActivityIndicatable {
         navigationController?.navigationBar.prefersLargeTitles = false
         mapContainer.setShadow()
         configureCollectionView()
+        setRightBarButton(countryDetail.isStored ?? false ? "Delete" : "Save",
+                          selector: #selector(saveDeleteAction(_:)))
     }
     
     override func viewDidLayoutSubviews() {
@@ -96,12 +101,33 @@ class CountryDetailView: UIViewController, ActivityIndicatable {
         ])
         bordersContainer.layoutIfNeeded()
     }
+    
+    @objc func saveDeleteAction(_ sender: Any) {
+        guard !(countryDetail.isStored ?? false) else {
+            let result = viewModel.delete(by: countryDetail.name)
+            switch result{
+            case .success(_):
+                self.navigationController?.popViewController(animated: true)
+            case .failure(let error):
+                showMessage(error.localizedDescription, title: "Error")
+            }
+            return
+        }
+        do {
+            _ = try viewModel.store(countryDetail: self.countryDetail)
+            countryDetail.isStored = true
+            setRightBarButton("Delete", selector: #selector(saveDeleteAction(_:)))
+        } catch let error {
+            print(error)
+        }
+    }
 }
 
 extension CountryDetailView: UICollectionViewDataSource {
+    
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
-        return borders.count
+        return countryBorders.count
     }
     
     func collectionView(_ collectionView: UICollectionView,
@@ -117,7 +143,10 @@ extension CountryDetailView: UICollectionViewDataSource {
 }
 
 extension CountryDetailView: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 120, height: 113)
     }
 }

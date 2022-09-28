@@ -149,15 +149,22 @@ extension CountriesView: UITableViewDelegate {
         }
         startLoading(with: "Fetching country detail...")
         countryDetailViewBuilder.build(with: viewModel.networkManager,
-                                       countryName: country.name) { [weak self] countryDetailView in
+                                       countryName: country.name,
+                                       coreDataManager: viewModel.coredataManager) {
+            [weak self] countryDetailView in
+            
             guard let self = self else { return }
             self.stopLoading()
             guard let countryDetailView = countryDetailView  else {
                 self.showMessage("Unable to download country detail", title: "Error")
                 return
             }
-            countryDetailView.countryBorders = self.viewModel
-                .borders(countryDetailView.borders)
+            
+            var borders: [String] = []
+            if countryDetailView.borders != nil {
+                borders = countryDetailView.borders
+            }
+            countryDetailView.countryBorders = self.viewModel.borders(borders)
             self.navigationController?.pushViewController(countryDetailView, animated: true)
             tableView.deselectRow(at: indexPath, animated: true)
         }

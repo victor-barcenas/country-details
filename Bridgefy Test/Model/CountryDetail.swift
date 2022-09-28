@@ -23,6 +23,7 @@ struct CountryDetail: Codable {
     let borders: [String]?
     let timezones: [String]
     let currencies: [Currency]?
+    var isStored: Bool?
 }
 
 struct Language: Codable {

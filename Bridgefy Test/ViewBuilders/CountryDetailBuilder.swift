@@ -13,25 +13,53 @@ final class CountryDetailBuilder {
     private var countryDetailView: CountryDetailView!
     private var country: CountryDetail!
     private var contentView: UIView!
+    private var viewModel: CountryDetailViewModel!
     
     func build(with networkManager: NetworkManager, countryName: String,
+               coreDataManager: CoreDataManager,
                _ completion: @escaping (CountryDetailView?) -> Void) {
-        let viewModel = CountryDetailViewModel(with: networkManager)
+        viewModel = CountryDetailViewModel(with: networkManager,
+                                               coreDataManager: coreDataManager)
         
-        viewModel.getCountryDetail(countryName) { [weak self] result in
+        let fetchResult = viewModel.fetch(countryName)
+        
+        switch fetchResult {
+        case.success(let countryDetail):
+            guard countryDetail != nil else {
+                getCountryDetail(countryName, completion)
+                return
+            }
+            country = countryDetail
+            country.isStored = true
+            configureCountryDetailView()
+            completion(countryDetailView)
+        case.failure(_):
+            getCountryDetail(countryName, completion)
+        }
+    }
+    
+    private func getCountryDetail(_ name: String,
+                      _ completion: @escaping (CountryDetailView?) -> Void) {
+        viewModel.getCountryDetail(name) { [weak self] result in
             switch result{
             case .success(let countryDetail):
                 guard let self = self else { return }
                 self.country = countryDetail.first
-                self.countryDetailView = CountryDetailView(viewModel)
-                self.configureViews()
-                self.countryDetailView.borders = self.country.borders
+                self.configureCountryDetailView()
                 completion(self.countryDetailView)
             case .failure(let error):
                 print(error)
                 completion(nil)
             }
         }
+    }
+    
+    private func configureCountryDetailView() {
+        countryDetailView = CountryDetailView(
+            viewModel, countryDetail: country
+        )
+        configureViews()
+        countryDetailView.borders = country.borders
     }
     
     private func configureViews() {

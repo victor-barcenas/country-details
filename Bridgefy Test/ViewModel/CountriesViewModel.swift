@@ -9,6 +9,7 @@ import Foundation
 
 final class CountriesViewModel: CountriesQueryable {
     var networkManager: NetworkManager!
+    var coredataManager: CoreDataManager!
     
     private var regions: [String] = []
     private var countriesByRegion: [String: [Country]] = [:]
@@ -22,8 +23,9 @@ final class CountriesViewModel: CountriesQueryable {
         return areCountriesGrouped ? regions.count : 1
     }
     
-    init(with networkManager: NetworkManager) {
+    init(with networkManager: NetworkManager, coredataManager: CoreDataManager) {
         self.networkManager = networkManager
+        self.coredataManager = coredataManager
     }
     
     func set(countries: [Country]) {

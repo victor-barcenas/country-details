@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21G115" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="CountryDetailManaged" representedClassName="CountryDetailManaged" syncable="YES" codeGenerationType="class">
+        <attribute name="alpha2Code" optional="YES" attributeType="String"/>
+        <attribute name="alpha3Code" optional="YES" attributeType="String"/>
+        <attribute name="area" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="borders" optional="YES" attributeType="Binary"/>
+        <attribute name="callingCodes" optional="YES" attributeType="Binary"/>
+        <attribute name="capital" optional="YES" attributeType="String"/>
+        <attribute name="currencies" optional="YES" attributeType="Binary"/>
+        <attribute name="flag" optional="YES" attributeType="Binary"/>
+        <attribute name="languages" optional="YES" attributeType="Binary"/>
+        <attribute name="latlng" optional="YES" attributeType="Binary"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="population" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="region" optional="YES" attributeType="String"/>
+        <attribute name="subregion" optional="YES" attributeType="String"/>
+        <attribute name="timezones" optional="YES" attributeType="Binary"/>
+    </entity>
+    <elements>
+        <element name="CountryDetailManaged" positionX="-54" positionY="-9" width="128" height="254"/>
+    </elements>
+</model>
